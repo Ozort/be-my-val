@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Most Beautiful Mistake</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: white;
+            font-size: clamp(2em, 5vw, 3em);
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            animation: fadeIn 1s ease-in;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: clamp(1em, 3vw, 1.2em);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        #yesBtn {
+            background: #ff6b9d;
+            color: white;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(255,107,157,0.4);
+        }
+
+        #noBtn {
+            background: white;
+            color: #667eea;
+            position: relative;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 2em;
+            animation: float 3s infinite;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) scale(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        .message {
+            color: white;
+            font-size: clamp(1em, 3vw, 1.3em);
+            margin-top: 30px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            line-height: 1.6;
+        }
+
+        .message.show {
+            opacity: 1;
+        }
+
+        .confession {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            margin-top: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        #gifContainer {
+            margin-bottom: 20px;
+            min-height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #gifImage {
+            max-width: 90%;
+            max-height: 250px;
+            border-radius: 15px;
+            display: none;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        @media (min-width: 768px) {
+            #gifContainer {
+                min-height: 200px;
+            }
+
+            #gifImage {
+                max-height: 300px;
+            }
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 15px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9em;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="gifContainer">
+            <img id="gifImage" src="" alt="">
+        </div>
+
+        <h1 id="question">Will you be my valentine?</h1>
+
+        <div class="buttons">
+            <button id="yesBtn">Of course! 💕</button>
+            <button id="noBtn">No...</button>
+        </div>
+
+        <div id="messageBox" class="message"></div>
+    </div>
+
+    <div class="footer">
+        Created with ❤️ by OZOЯT © 2026
+    </div>
+
+    <script>
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const question = document.getElementById('question');
+        const messageBox = document.getElementById('messageBox');
+        const gifImage = document.getElementById('gifImage');
+        let noClickCount = 0;
+
+        // Add your GIF URLs here! One for each "No" click
+        const noGifs = [
+            'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3A1czZuMHl2ZjI0ano3c2J5OHQ2ODh5dHc1eGppazh5ZXM2NjQ4YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lxxOGaDRk4f7R5TkBd/giphy.gif',  // Are you sure?
+            'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXNpc250dHJiamwwamw0dDh3MW1kcm02OGY0emZuOTV5djR0MGtxdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HB5jPAoy51vVJXFMsR/giphy.gif',  // Really?
+            'https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3a2wxYzhibzA2NGtwdncxeHJlcWNlaGthZW1tNjczYTRwaWRqaXg0NiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/iuzTZSoYDOQOhL1A8x/giphy.gif',  // The button is right there
+            'https://media1.tenor.com/m/A2Fb4YPnJbgAAAAd/dj-chicken-begging.gif',  // I'll wait
+            'https://media1.tenor.com/m/UAdpvL0E4t4AAAAd/my-wife-and-kids-hurt.gif',  // Still no?
+            'https://media1.tenor.com/m/lcFnDpmIqxcAAAAd/test-testing.gif',  // Testing patience
+            'https://media1.tenor.com/m/lDMve-IMXY8AAAAd/spongebob-squarepants-begging.gif',  // What if I told you
+            'https://media.tenor.com/SFy5Za0DyMEAAAAj/erm-fingers.gif'   // Final confession
+        ];
+
+        // GIF for clicking "Yes"
+        const yesGif = 'https://media.tenor.com/6jaDm2Pv6dUAAAAj/dare-aggie-dare-aggie-bunny.gif';
+
+        const messages = [
+            "Ha! Shey na mistake? 🥺",
+            "Really? Think am well o... 💭",
+            "The button is right there! on the left o ➡️",
+            "Abeg now... ⏰",
+            "Still no? Oh chim, My Chest! 💔",
+            "You're really testing my patience here! 😅",
+            "Oya, Oya... I will buy you ice cream...",
+            "<div class='confession'>Omo, You stubborn o.<br><br>Well i don't imagine spending valentines day with anyone else but you because i love you so much.<br><br>So abeg, pity me. ✨<br><br>Now... will you be my valentine?</div>"
+        ];
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.textContent = '💕';
+            heart.style.left = Math.random() * window.innerWidth + 'px';
+            heart.style.top = Math.random() * window.innerHeight + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 3000);
+        }
+
+        noBtn.addEventListener('click', function() {
+            noBtn.classList.add('shake');
+            setTimeout(() => noBtn.classList.remove('shake'), 500);
+
+            if (noClickCount < messages.length) {
+                // Show the GIF for this click immediately
+                if (noGifs[noClickCount]) {
+                    // Preload the image to avoid delay
+                    const img = new Image();
+                    img.onload = function() {
+                        gifImage.src = this.src;
+                        gifImage.style.display = 'block';
+                    };
+                    img.src = noGifs[noClickCount];
+                }
+
+                messageBox.innerHTML = messages[noClickCount];
+                messageBox.classList.add('show');
+                noClickCount++;
+
+                // Make yes button bigger with each no
+                const newSize = 1 + (noClickCount * 0.15);
+                yesBtn.style.transform = `scale(${newSize})`;
+
+                // Hide No button on final confession message
+                if (noClickCount === messages.length) {
+                    noBtn.style.display = 'none';
+                }
+            }
+        });
+
+        yesBtn.addEventListener('click', function() {
+            // Show yes GIF
+            gifImage.src = yesGif;
+            gifImage.style.display = 'block';
+
+            question.textContent = "I knew you'd say yes! 💖";
+            messageBox.innerHTML = "<div class='confession'>Every hesitation, every playful 'no,' every moment of doubt... they all led us here.<br><br>The most beautiful mistakes are the ones that make the 'yes' even sweeter.<br><br>Happy Valentine's Day! 🌹✨</div>";
+            messageBox.classList.add('show');
+            yesBtn.style.display = 'none';
+            noBtn.style.display = 'none';
+
+            // Create lots of hearts
+            for (let i = 0; i < 20; i++) {
+                setTimeout(createHeart, i * 100);
+            }
+        });
+    </script>
+</body>
+</html>
