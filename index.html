@@ -206,30 +206,42 @@
         let noClickCount = 0;
 
         // Add your GIF URLs here! One for each "No" click
+        // Use local paths like: './gifs/gif1.gif' after uploading to your repo
         const noGifs = [
-            'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3A1czZuMHl2ZjI0ano3c2J5OHQ2ODh5dHc1eGppazh5ZXM2NjQ4YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lxxOGaDRk4f7R5TkBd/giphy.gif',  // Are you sure?
-            'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXNpc250dHJiamwwamw0dDh3MW1kcm02OGY0emZuOTV5djR0MGtxdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HB5jPAoy51vVJXFMsR/giphy.gif',  // Really?
-            'https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3a2wxYzhibzA2NGtwdncxeHJlcWNlaGthZW1tNjczYTRwaWRqaXg0NiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/iuzTZSoYDOQOhL1A8x/giphy.gif',  // The button is right there
-            'https://media1.tenor.com/m/A2Fb4YPnJbgAAAAd/dj-chicken-begging.gif',  // I'll wait
-            'https://media1.tenor.com/m/UAdpvL0E4t4AAAAd/my-wife-and-kids-hurt.gif',  // Still no?
-            'https://media1.tenor.com/m/lcFnDpmIqxcAAAAd/test-testing.gif',  // Testing patience
-            'https://media1.tenor.com/m/lDMve-IMXY8AAAAd/spongebob-squarepants-begging.gif',  // What if I told you
-            'https://media.tenor.com/SFy5Za0DyMEAAAAj/erm-fingers.gif'   // Final confession
+            './gifs/no1.gif',  // Are you sure?
+            './gifs/no2.gif',  // Really?
+            './gifs/no3.gif',  // The button is right there
+            './gifs/no4.gif',  // I'll wait
+            './gifs/no5.gif',  // Still no?
+            './gifs/no6.gif',  // Testing patience
+            './gifs/no7.gif',  // What if I told you
+            './gifs/no8.gif'   // Final confession
         ];
 
         // GIF for clicking "Yes"
-        const yesGif = 'https://media.tenor.com/6jaDm2Pv6dUAAAAj/dare-aggie-dare-aggie-bunny.gif';
+        const yesGif = './gifs/yes.gif';
+
+        // Preload all GIFs when page loads for instant display
+        window.addEventListener('load', function() {
+            const allGifs = [...noGifs, yesGif];
+            allGifs.forEach(url => {
+                if (url) {
+                    const img = new Image();
+                    img.src = url;
+                }
+            });
+        });
 
         const messages = [
-            "Ha! Shey na mistake? 🥺",
-            "Really? Think am well o... 💭",
-            "The button is right there! on the left o ⬅️",
-            "Abeg now... 🥲",
-            "Still no? Oh chim, My Chest! 💔",
-            "You're really testing my patience here! 😡",
-            "Oya, Oya... I will buy you ice cream... 😓",
-            "<div class='confession'>Omo, You stubborn o.<br><br>Well i don't imagine spending valentines day with anyone else but you because i love you so much.<br><br>So abeg, pity me. ✨<br><br>Now... will you be my valentine?</div>"
-        ];
+           "Ha! Shey na mistake? 🥺",
+           "Really? Think am well o... 💭",
+           "The button is right there! on the left o ⬅️",
+           "Abeg now... 🥲",
+           "Still no? Oh chim, My Chest! 💔",
+           "You're really testing my patience here! 😡",
+           "Oya, Oya... I will buy you ice cream... 😓",
+           "<div class='confession'>Omo, You stubborn o.<br><br>Well i don't imagine spending valentines day with anyone else but you because i love you so much.<br><br>So abeg, pity me. ✨<br><br>Now... will you be my valentine?</div>"
+       ];
 
         function createHeart() {
             const heart = document.createElement('div');
